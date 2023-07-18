@@ -79,6 +79,16 @@ void binary2decimal(int *binary, int *decimal)
     }
 }
 
+void reverse(int *binary, int *reversedBinary)
+{
+    int j = 7;
+    for(int i = 0; i < BYTE; i++)
+    {
+        reversedBinary[j] = binary[i];
+        j--;
+    }
+}
+
 unsigned int getTotalChars(char *filename)
 {
     // read file
@@ -179,4 +189,63 @@ void encode(char *inputFile, char *messageFile, char *outputFile)
 
     // encode image
     encode_image(outputFile, &encodedImageInfo);
+}
+
+void decode(char *inputFile)
+{
+    struct ImageInfo decodedImageInfo;
+
+    decode_image(inputFile, &decodedImageInfo);
+
+    size_t imageSize = decodedImageInfo.width * decodedImageInfo.height * 4;
+
+    // allocate memory for binary number
+    int
+        *binary = malloc(sizeof(int) * BYTE),
+        *binBuffer = malloc(sizeof(int) * BYTE),
+        *decimal = malloc(sizeof(int)),
+        *reversedBinary = malloc(sizeof(int) * BYTE),
+        count = 0;
+
+    FILE *file = fopen("message.txt", "w");
+    if(file == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i = 0; i < imageSize; i++)
+    {
+
+        // convert decimal to binary
+        decimal2binary(decodedImageInfo.image[i], binary);
+
+
+        if(count < BYTE)
+        {
+            binBuffer[count] = binary[0];
+            if(count == 7)
+            {
+                *decimal = 0;
+                reverse(binBuffer, reversedBinary);
+                binary2decimal(reversedBinary, decimal);
+                
+                if(*decimal != 0)
+                {
+                    fprintf(file, "%c", *decimal);
+                }
+                else
+                {
+                    exit(EXIT_SUCCESS);
+                }
+
+            }
+
+            count++;
+        }
+
+        if(count == BYTE) count = 0;
+    }
+
+    fclose(file);
 }

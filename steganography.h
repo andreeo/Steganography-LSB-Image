@@ -13,6 +13,8 @@ void decimal2binary(int decimal, int *binary);
 
 void binary2decimal(int *binary, int *decimal);
 
+void reverse(int  *binary, int *reversedBinary);
+
 unsigned int getTotalChars(char *filename);
 
 void char2binary(char *filename, int *binaries);
@@ -20,5 +22,7 @@ void char2binary(char *filename, int *binaries);
 void LSBAlgorithm(struct ImageInfo decodedImageInfo, char *messageFile, struct ImageInfo *encodedImageInfo);
 
 void encode(char *inputFile, char *messageFile, char *outputFile);
+
+void decode(char *inputFile);
 
 #endif

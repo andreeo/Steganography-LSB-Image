@@ -50,7 +50,7 @@ main(int argc, char *argv[])
 
         inputFile = argv[2];
 
-        // here call decode function: decode(inputFile);
+        decode(inputFile);
     }
     else
     {
