@@ -1,40 +1,62 @@
-#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int
 main(int argc, char *argv[])
 {
     // declare variables
-    int opt;
-    char* inputFile, *messageFile, *outputFile;
+    char
+        *inputFile,
+        *messageFile,
+        *outputFile;
 
-    // check if the number of arguments is correct
-    if(argc  < 7 || argc == 8)
+    // check if the arguments are valid
+    if(argc == 1)
     {
-        fprintf(stderr, "Usage: %s [-i input-file] [-mf message file] [-o output file]\n",
-                    argv[0]);
+        fprintf(stderr, "Invalid arguments\n");
+        fprintf(stderr, "Usage: %s -e input-file.png message.txt staged-image.png \n", argv[0]);
+        fprintf(stderr, "Usage: %s -d staged-image.png \n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
-    // parse the arguments
-    while ((opt = getopt(argc, argv, "imfo")) != -1) {
-        printf("%d\n", opt);
-        switch (opt) {
-        case 'i':
-            inputFile  = argv[optind];
-            break;
-        case 'm':
-            messageFile = argv[optind];
-            break;
-        case 'o':
-            outputFile = argv[optind];
-            break;
-        default: // 
-            fprintf(stderr, "Usage: %s [-i input-file] [-m message file] [-o output-file]\n",
-                    argv[0]);
+    // assign arguments to variables
+    if(strcmp(argv[1], "-e") == 0)
+    {
+        // check if the arguments are valid
+        if(argc < 5)
+        {
+            fprintf(stderr, "Invalid arguments\n");
+            fprintf(stderr, "Usage: %s -e input-file.png message.txt staged-image.png \n", argv[0]);
             exit(EXIT_FAILURE);
         }
+
+        inputFile = argv[2];
+        messageFile = argv[3];
+        outputFile = argv[4];
+
+        // here call encode function: encode(inputFile, messageFile, outputFile);
+    }
+    else if(strcmp(argv[1], "-d") == 0)
+    {
+        // check if the arguments are valid
+        if(argc < 3)
+        {
+            fprintf(stderr, "Invalid arguments\n");
+            fprintf(stderr, "Usage: %s -d staged-image.png \n", argv[0]);
+            exit(EXIT_FAILURE);
+        }
+
+        inputFile = argv[2];
+
+        // here call decode function: decode(inputFile);
+    }
+    else
+    {
+        fprintf(stderr, "Invalid arguments\n");
+        fprintf(stderr, "Usage: %s -e input-file.png message.txt staged-image.png \n", argv[0]);
+        fprintf(stderr, "Usage: %s -d staged-image.png \n", argv[0]);
+        exit(EXIT_FAILURE);
     }
 
     exit(EXIT_SUCCESS);
