@@ -1,4 +1,4 @@
 *.png
+!input_image.png
 *.txt
-*.dat
-*.log
+!secret_file.txt
