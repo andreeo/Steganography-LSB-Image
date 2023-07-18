@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "steganography.h"
 
 int
 main(int argc, char *argv[])
@@ -35,7 +36,7 @@ main(int argc, char *argv[])
         messageFile = argv[3];
         outputFile = argv[4];
 
-        // here call encode function: encode(inputFile, messageFile, outputFile);
+        encode(inputFile, messageFile, outputFile);
     }
     else if(strcmp(argv[1], "-d") == 0)
     {
