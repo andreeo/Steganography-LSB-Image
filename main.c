@@ -45,12 +45,29 @@ main(int argc, char *argv[])
         {
             fprintf(stderr, "Invalid arguments\n");
             fprintf(stderr, "Usage: %s -d staged-image.png \n", argv[0]);
+            fprintf(stderr, "Usage: %s -d staged-imaged.png -o output-file.txt \n", argv[0]);
             exit(EXIT_FAILURE);
         }
 
         inputFile = argv[2];
 
-        decode(inputFile);
+        if(argc > 3 && strcmp(argv[3], "-o") == 0)
+        {
+            if(argc < 5)
+            {
+                fprintf(stderr, "Invalid arguments\n");
+                fprintf(stderr, "Usage: %s -d staged-imaged.png -o output-file.txt \n", argv[0]);
+                exit(EXIT_FAILURE);
+            }
+
+            outputFile = argv[4];
+        }
+        else
+        {
+            outputFile = "message.txt";
+        }
+
+        decode(inputFile, outputFile);
     }
     else
     {

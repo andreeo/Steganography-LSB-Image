@@ -191,7 +191,7 @@ void encode(char *inputFile, char *messageFile, char *outputFile)
     encode_image(outputFile, &encodedImageInfo);
 }
 
-void decode(char *inputFile)
+void decode(char *inputFile, char *outputFile)
 {
     struct ImageInfo decodedImageInfo;
 
@@ -207,7 +207,7 @@ void decode(char *inputFile)
         *reversedBinary = malloc(sizeof(int) * BYTE),
         count = 0;
 
-    FILE *file = fopen("message.txt", "w");
+    FILE *file = fopen(outputFile, "w");
     if(file == NULL)
     {
         printf("Error opening file!\n");
