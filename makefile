@@ -1,7 +1,7 @@
 CC = gcc
 CFLAFS = -Wall
 LDFLAGS =
-OBJFILES = main.o steganography.o
+OBJFILES = main.o steganography.o steganography_util.o
 3RDPARTY = 3rdparty/lodepng/lodepng.c
 TARGET = stega
 
