@@ -15,27 +15,29 @@
 *
 *   returns: void
 */
-void decode_image(char *inputFileName, struct ImageInfo *imageInfo)
+void
+decode_image (char *inputFileName, struct ImageInfo *imageInfo)
 {
-    unsigned error;
-    unsigned char *image = 0;
-    unsigned width, height;
+  unsigned error;
+  unsigned char *image = 0;
+  unsigned width, height;
 
-    // decode
-    error = lodepng_decode32_file(&image, &width, &height, inputFileName);
+  // decode
+  error = lodepng_decode32_file (&image, &width, &height, inputFileName);
 
-    // if there's an error, display it
-    if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
+  // if there's an error, display it
+  if (error)
+    printf ("error %u: %s\n", error, lodepng_error_text (error));
 
-    // store the image info
-    imageInfo->image = 0;
-    imageInfo->image = image;
-    imageInfo->width = width;
-    imageInfo->height = height;
+  // store the image info
+  imageInfo->image = 0;
+  imageInfo->image = image;
+  imageInfo->width = width;
+  imageInfo->height = height;
 
-    //free(image); // free memory used by image
+  //free(image); // free memory used by image
 
-    return;
+  return;
 }
 
 /*
@@ -49,15 +51,19 @@ void decode_image(char *inputFileName, struct ImageInfo *imageInfo)
 *
 *   returns: void
 */
-void encode_image(char *outputFileName, struct ImageInfo *imageInfo)
+void
+encode_image (char *outputFileName, struct ImageInfo *imageInfo)
 {
-    unsigned error;
+  unsigned error;
 
-    // encode
-    error = lodepng_encode32_file(outputFileName, imageInfo->image, imageInfo->width, imageInfo->height);
+  // encode
+  error =
+    lodepng_encode32_file (outputFileName, imageInfo->image, imageInfo->width,
+                           imageInfo->height);
 
-    // if there's an error, display it
-    if(error) printf("error %u: %s\n", error, lodepng_error_text(error));
+  // if there's an error, display it
+  if (error)
+    printf ("error %u: %s\n", error, lodepng_error_text (error));
 }
 
 /*
@@ -71,23 +77,24 @@ void encode_image(char *outputFileName, struct ImageInfo *imageInfo)
 *
 *   returns: void
 */
-void decimal2binary(int decimal, int *binary)
+void
+decimal2binary (int decimal, int *binary)
 {
-    int i = 0;
-    while(decimal > 0)
-    {
-        binary[i] = decimal % 2;
-        decimal = decimal / 2;
-        i++;
-    }
+  int i = 0;
+  while (decimal > 0)
+  {
+    binary[i] = decimal % 2;
+    decimal = decimal / 2;
+    i++;
+  }
 
-    if(i < BYTE)
+  if (i < BYTE)
+  {
+    for (int j = i; j < BYTE; j++)
     {
-        for(int j = i; j < BYTE; j++)
-        {
-            binary[j] = 0;
-        }
+      binary[j] = 0;
     }
+  }
 }
 
 /*
@@ -101,15 +108,16 @@ void decimal2binary(int decimal, int *binary)
 *
 *   returns: void
 */
-void binary2decimal(int *binary, int *decimal)
+void
+binary2decimal (int *binary, int *decimal)
 {
-    int i = 0;
-    while(i < BYTE)
-    {
-        // shift left by i bits and add to decimal
-        *decimal += binary[i] * (1 << i);
-        i++;
-    }
+  int i = 0;
+  while (i < BYTE)
+  {
+    // shift left by i bits and add to decimal
+    *decimal += binary[i] * (1 << i);
+    i++;
+  }
 }
 
 /*
@@ -123,14 +131,15 @@ void binary2decimal(int *binary, int *decimal)
 *
 *   returns: void
 */
-void reverse(int *binary, int *reversedBinary)
+void
+reverse (int *binary, int *reversedBinary)
 {
-    int j = 7;
-    for(int i = 0; i < BYTE; i++)
-    {
-        reversedBinary[j] = binary[i];
-        j--;
-    }
+  int j = 7;
+  for (int i = 0; i < BYTE; i++)
+  {
+    reversedBinary[j] = binary[i];
+    j--;
+  }
 }
 
 /*
@@ -143,21 +152,22 @@ void reverse(int *binary, int *reversedBinary)
 *
 *   returns: int - the total number of characters in a file
 */
-unsigned int getTotalChars(char *filename)
+unsigned int
+getTotalChars (char *filename)
 {
-    // read file
-    FILE *file = fopen(filename, "r");
-    
-    // read character by character
-    char c;
-    unsigned int j = 0;
-    while((c = fgetc(file)) != EOF)
-    {
-        j++;
-    }
-    fclose(file);
+  // read file
+  FILE *file = fopen (filename, "r");
 
-    return j;
+  // read character by character
+  char c;
+  unsigned int j = 0;
+  while ((c = fgetc (file)) != EOF)
+  {
+    j++;
+  }
+  fclose (file);
+
+  return j;
 }
 
 /*
@@ -171,23 +181,24 @@ unsigned int getTotalChars(char *filename)
 *
 *   returns: void
 */
-void char2binary(char *filename, int *binaries)
+void
+char2binary (char *filename, int *binaries)
 {
-    char c;
-    int k = 0, *bin = malloc(sizeof(int) * BYTE);
+  char c;
+  int k = 0, *bin = malloc (sizeof (int) * BYTE);
 
-    FILE *file = fopen(filename, "r");
+  FILE *file = fopen (filename, "r");
 
-    while((c = fgetc(file)) != EOF)
+  while ((c = fgetc (file)) != EOF)
+  {
+    for (int i = 0; i < BYTE; i++)
     {
-        for(int i = 0; i < BYTE; i++)
-        {
-            bin[i] = ((c << i) & 0x80) ? 1 : 0;
-            binaries[k] = bin[i];
-            k++;
-        }
+      bin[i] = ((c << i) & 0x80) ? 1 : 0;
+      binaries[k] = bin[i];
+      k++;
     }
-    fclose(file);
+  }
+  fclose (file);
 }
 
 /*
@@ -202,51 +213,52 @@ void char2binary(char *filename, int *binaries)
 *
 *   returns: void
 */
-void LSBAlgorithm(struct ImageInfo decodedImageInfo, char *messageFile, struct ImageInfo *encodedImageInfo)
+void
+LSBAlgorithm (struct ImageInfo decodedImageInfo, char *messageFile,
+              struct ImageInfo *encodedImageInfo)
 {
 
-    int
-        j = getTotalChars(messageFile),
-        totalBits = BYTE * j,
-        *binaries = malloc(sizeof(int)*totalBits),
-        count = 0;
+  int
+    j = getTotalChars (messageFile),
+    totalBits = BYTE * j,
+    *binaries = malloc (sizeof (int) * totalBits), count = 0;
 
-    size_t imageSize = decodedImageInfo.width * decodedImageInfo.height * 4;
+  size_t imageSize = decodedImageInfo.width * decodedImageInfo.height * 4;
 
-    char2binary(messageFile, binaries);
+  char2binary (messageFile, binaries);
 
-    //modify each byte of the image
-    for(int i = 0; i < imageSize; i++)
+  //modify each byte of the image
+  for (int i = 0; i < imageSize; i++)
+  {
+    // allocate memory for binary number
+    int *binary = malloc (sizeof (int) * BYTE);
+
+    // convert decimal to binary
+    decimal2binary (decodedImageInfo.image[i], binary);
+
+    if (i < totalBits)
     {
-        // allocate memory for binary number
-        int *binary = malloc(sizeof(int) * BYTE);
-
-        // convert decimal to binary
-        decimal2binary(decodedImageInfo.image[i], binary);
-        
-        if(i < totalBits)
-        {
-            binary[0] = binaries[i];
-        }
-        else if(count < BYTE)
-        {
-            binary[0] = 0;
-            count++;
-        } 
-
-        // allocate  memory for decimal number
-        int *decimal = malloc(sizeof(int));
-        *decimal = 0;
-
-        // convert binary to decimal
-        binary2decimal(binary, decimal);
-
-        // modify the image
-        encodedImageInfo->image[i] = *decimal;
-
-        // free memory
-        free(decimal);
-        free(binary);
+      binary[0] = binaries[i];
     }
+    else if (count < BYTE)
+    {
+      binary[0] = 0;
+      count++;
+    }
+
+    // allocate  memory for decimal number
+    int *decimal = malloc (sizeof (int));
+    *decimal = 0;
+
+    // convert binary to decimal
+    binary2decimal (binary, decimal);
+
+    // modify the image
+    encodedImageInfo->image[i] = *decimal;
+
+    // free memory
+    free (decimal);
+    free (binary);
+  }
 
 }

@@ -16,21 +16,22 @@
 *
 *   returns: void
 */
-void encode(char *inputFile, char *messageFile, char *outputFile)
+void
+encode (char *inputFile, char *messageFile, char *outputFile)
 {
-    struct ImageInfo decodedImageInfo, encodedImageInfo;
+  struct ImageInfo decodedImageInfo, encodedImageInfo;
 
-    //  decode image
-    decode_image(inputFile, &decodedImageInfo);
+  //  decode image
+  decode_image (inputFile, &decodedImageInfo);
 
-    // copy decoded image info to encoded image info
-    memcpy(&encodedImageInfo, &decodedImageInfo, sizeof(decodedImageInfo));
+  // copy decoded image info to encoded image info
+  memcpy (&encodedImageInfo, &decodedImageInfo, sizeof (decodedImageInfo));
 
-    // apply LSB algorithm to encode image
-    LSBAlgorithm(decodedImageInfo, messageFile, &encodedImageInfo);
+  // apply LSB algorithm to encode image
+  LSBAlgorithm (decodedImageInfo, messageFile, &encodedImageInfo);
 
-    // encode image
-    encode_image(outputFile, &encodedImageInfo);
+  // encode image
+  encode_image (outputFile, &encodedImageInfo);
 }
 
 /*
@@ -44,61 +45,62 @@ void encode(char *inputFile, char *messageFile, char *outputFile)
 *
 *   returns: void
 */
-void decode(char *inputFile, char *outputFile)
+void
+decode (char *inputFile, char *outputFile)
 {
-    struct ImageInfo decodedImageInfo;
+  struct ImageInfo decodedImageInfo;
 
-    decode_image(inputFile, &decodedImageInfo);
+  decode_image (inputFile, &decodedImageInfo);
 
-    size_t imageSize = decodedImageInfo.width * decodedImageInfo.height * 4;
+  size_t imageSize = decodedImageInfo.width * decodedImageInfo.height * 4;
 
-    // allocate memory for binary number
-    int
-        *binary = malloc(sizeof(int) * BYTE),
-        *binBuffer = malloc(sizeof(int) * BYTE),
-        *decimal = malloc(sizeof(int)),
-        *reversedBinary = malloc(sizeof(int) * BYTE),
-        count = 0;
+  // allocate memory for binary number
+  int
+    *binary = malloc (sizeof (int) * BYTE),
+    *binBuffer = malloc (sizeof (int) * BYTE),
+    *decimal = malloc (sizeof (int)),
+    *reversedBinary = malloc (sizeof (int) * BYTE), count = 0;
 
-    FILE *file = fopen(outputFile, "w");
-    if(file == NULL)
+  FILE *file = fopen (outputFile, "w");
+  if (file == NULL)
+  {
+    printf ("Error opening file!\n");
+    exit (EXIT_FAILURE);
+  }
+
+  for (int i = 0; i < imageSize; i++)
+  {
+
+    // convert decimal to binary
+    decimal2binary (decodedImageInfo.image[i], binary);
+
+
+    if (count < BYTE)
     {
-        printf("Error opening file!\n");
-        exit(EXIT_FAILURE);
-    }
+      binBuffer[count] = binary[0];
+      if (count == 7)
+      {
+        *decimal = 0;
+        reverse (binBuffer, reversedBinary);
+        binary2decimal (reversedBinary, decimal);
 
-    for(int i = 0; i < imageSize; i++)
-    {
-
-        // convert decimal to binary
-        decimal2binary(decodedImageInfo.image[i], binary);
-
-
-        if(count < BYTE)
+        if (*decimal != 0)
         {
-            binBuffer[count] = binary[0];
-            if(count == 7)
-            {
-                *decimal = 0;
-                reverse(binBuffer, reversedBinary);
-                binary2decimal(reversedBinary, decimal);
-                
-                if(*decimal != 0)
-                {
-                    fprintf(file, "%c", *decimal);
-                }
-                else
-                {
-                    exit(EXIT_SUCCESS);
-                }
-
-            }
-
-            count++;
+          fprintf (file, "%c", *decimal);
+        }
+        else
+        {
+          exit (EXIT_SUCCESS);
         }
 
-        if(count == BYTE) count = 0;
+      }
+
+      count++;
     }
 
-    fclose(file);
+    if (count == BYTE)
+      count = 0;
+  }
+
+  fclose (file);
 }

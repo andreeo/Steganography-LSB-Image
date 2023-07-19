@@ -12,3 +12,11 @@ $(TARGET): $(OBJFILES)
 
 clean:
 	rm -f $(OBJFILES) $(TARGET) *~
+
+indent: indent-format clean
+
+indent-format:
+	indent *.c \
+		-nbad -bap -nbc -bbo -bl -bli0 -bls -ncdb -nce -cp1 -cs -di2 \
+		-ndj -nfc1 -nfca -hnl -i2 -ip5 -lp -pcs -nprs -psl -saf -sai \
+		-saw -nsc -nsob -nut
